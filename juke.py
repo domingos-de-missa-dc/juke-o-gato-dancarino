@@ -7,7 +7,6 @@ import asyncio
 import aiohttp
 
 import os
-import time
 import platform
 from datetime import date
 
@@ -32,9 +31,11 @@ class myBot(discord.Client):
 
     async def on_ready(self):
         await tree.sync(guild=discord.Object(id=serverId))
+
         # might be overkill for a request a day, but will enable us to make more requests to the Webhook if there are some interesting ideas to be done
         # or even fetch some API data for some interesting stuff
         self.session = aiohttp.ClientSession()
+        
         self.synced = True
         print("Bot is online")
 
@@ -106,9 +107,6 @@ async def self(interaction: discord.Interaction, channel: discord.VoiceChannel, 
         await interaction.response.send_message(f"Sound with number {audio} not found.")
         return
     
-    # moved to line 127 so feedback on exception can be returned 
-    ## await interaction.response.send_message(f"Playing {audioName.replace('.mp3', '')} on {channel}")
-
     targetChannel = discord.utils.get(interaction.guild.voice_channels, name=channel.name)
     
     if targetChannel != None:
@@ -129,8 +127,7 @@ async def self(interaction: discord.Interaction, channel: discord.VoiceChannel, 
         except discord.errors.ClientException:
             await interaction.response.send_message(f"An audio is already playing")
 
-        # FIXED COMMENT this while loop is blocking other commands while the .play thread is
-        # executing, with await we cease control to the event loop so other commands can be run
+        # with await we cease control to the event loop so other commands can be run
         while voiceClient.is_playing():
             await asyncio.sleep(.1)
         
@@ -188,5 +185,4 @@ bot.run(os.environ.get("API_KEY"))
 # play YT links
 # if the bot is connected and is called on another channel it doesnt change channel
 # venv
-# git
 # pythonify the naming convention
