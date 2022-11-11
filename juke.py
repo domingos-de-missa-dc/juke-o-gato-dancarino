@@ -1,3 +1,7 @@
+#
+#   Author: fmfarto @ GitHub
+#
+
 import discord
 import asyncio
 import aiohttp
@@ -143,7 +147,6 @@ async def self(interaction: discord.Interaction, audio: int):
         await interaction.response.send_message(f"Sound with number {audio} not found.")
         return
         
-    await interaction.response.send_message(f"Playing sound: {audioName.replace('.mp3', '')}")
         
     voice = interaction.user.voice
     if voice == None:
@@ -157,8 +160,13 @@ async def self(interaction: discord.Interaction, audio: int):
 
     audioFile = os.path.join(audioPath, audioName)
     audioSource = discord.FFmpegPCMAudio(audioFile)
-    voiceClient.play(audioSource)
 
+    try:
+        voiceClient.play(audioSource)
+        await interaction.response.send_message(f"Playing sound: {audioName.replace('.mp3', '')}")
+    except discord.errors.ClientException:
+        await interaction.response.send_message(f"An audio is already playing")
+        
 
 @tree.command(name="whoami", description="Who am I", guild=discord.Object(id=serverId))
 async def self(interaction: discord.Interaction):
@@ -181,3 +189,4 @@ bot.run(os.environ.get("API_KEY"))
 # if the bot is connected and is called on another channel it doesnt change channel
 # venv
 # git
+# pythonify the naming convention
