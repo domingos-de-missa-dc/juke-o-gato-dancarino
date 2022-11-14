@@ -176,14 +176,15 @@ async def pupulateAvailableSounds():
 
 @bot.event
 async def on_member_join(member):
-    guild = bot.get_guild(serverId)
+    guild = bot.get_guild(int(serverId))
     role = discord.utils.get(guild.roles, name="Plebs")
 
     try:
         await member.add_roles(role)
-    except(discord.HTTPEXception):
-        guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
+    except discord.HTTPException:
+        await guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
 
+print(os.environ.get("API_KEY"))
 bot.run(os.environ.get("API_KEY"))
 
 # TODO
