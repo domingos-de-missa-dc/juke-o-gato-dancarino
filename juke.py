@@ -181,6 +181,8 @@ async def on_member_join(member):
 
     if(role):
         await member.add_roles(role)
+    else:
+        guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
 
 bot.run(os.environ.get("API_KEY"))
 
