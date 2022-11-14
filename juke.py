@@ -14,7 +14,6 @@ from discord.ext import commands
 from discord import app_commands
 from discord.ext import tasks
 
-
 serverId= os.environ.get("SERVER_ID")
 
 audioPath = 'audio' if platform.system() == 'Windows' else os.environ.get("AUDIO_PATH")
@@ -25,7 +24,7 @@ availableSounds = {}
 
 class myBot(discord.Client):
     def __init__(self):
-        super().__init__(intents=discord.Intents.default())
+        super().__init__(intents=discord.Intents.all())
         self.slyced = False
         
 
@@ -53,7 +52,7 @@ class myBot(discord.Client):
             daysLeftToPay = payDay - todaysDay
             payload = {"username": "Autoridade Tributária", "content": "@here\nPaga o que deves!\nDias até o server morrer: " + str(daysLeftToPay) + ":fire:" + "\n", "embeds": [{"title": "Imposto", "color": 16777215, "description": "4.32€"}]}
             webhook_url = os.environ.get("WEBHOOK")
-            await self.session.post(webhook_url, json=payload)
+            await self.session.post(webhook_url, json=payload)  
 
 bot = myBot()
 tree = app_commands.CommandTree(bot)
@@ -175,8 +174,17 @@ async def pupulateAvailableSounds():
         availableSounds[i] = {file}
         i += 1
 
-bot.run(os.environ.get("API_KEY"))
+@bot.event
+async def on_member_join(member):
+    guild = bot.get_guild(serverId)
+    role = discord.utils.get(guild.roles, name="Plebs")
 
+    try:
+        await member.add_roles(role)
+    except(discord.HTTPEXception):
+        guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
+
+bot.run(os.environ.get("API_KEY"))
 
 # TODO
 # refactor audio play code to be done in a sync function
@@ -186,3 +194,4 @@ bot.run(os.environ.get("API_KEY"))
 # if the bot is connected and is called on another channel it doesnt change channel
 # venv
 # pythonify the naming convention
+# add command to replace default role on_member_join
