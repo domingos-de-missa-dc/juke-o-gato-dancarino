@@ -179,9 +179,9 @@ async def on_member_join(member):
     guild = bot.get_guild(serverId)
     role = discord.utils.get(guild.roles, name="Plebs")
 
-    if(role):
+    try:
         await member.add_roles(role)
-    else:
+    except(discord.HTTPEXception):
         guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
 
 bot.run(os.environ.get("API_KEY"))
