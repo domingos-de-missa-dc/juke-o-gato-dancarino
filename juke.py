@@ -184,7 +184,6 @@ async def on_member_join(member):
     except discord.HTTPException:
         await guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
 
-print(os.environ.get("API_KEY"))
 bot.run(os.environ.get("API_KEY"))
 
 # TODO
