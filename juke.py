@@ -184,6 +184,23 @@ async def on_member_join(member):
     except discord.HTTPException:
         await guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
 
+
+@bot.event
+async def on_message_delete(message):
+    
+    try:
+        file = discord.File("images/delete.jpg")
+        await message.channel.send(content=message.author.mention, file=file)
+    except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError as ex:
+        print(ex)
+
+@bot.event
+async def on_message_edit(messageBefore, messageAfter):
+
+    file = discord.File("images/delete.jpg")
+
+    await messageBefore.channel.send(content=messageBefore.author.mention, file=file)
+
 bot.run(os.environ.get("API_KEY"))
 
 # TODO
