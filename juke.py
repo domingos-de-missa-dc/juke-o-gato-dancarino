@@ -66,7 +66,7 @@ class MyBot(discord.Client):
         except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError:
             pass
 
-    @tasks.loop(seconds=5.0)
+    @tasks.loop(hours=24.0)
     async def payment_reminder(self):
         """ Remind server that payment is pending from first day of the month until 6th """
         todays_day = date.today().day
