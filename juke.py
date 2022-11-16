@@ -54,6 +54,30 @@ class myBot(discord.Client):
             webhook_url = os.environ.get("WEBHOOK")
             await self.session.post(webhook_url, json=payload)  
 
+    async def on_member_join(self, member):
+        #guild = self.get_guild(int(serverId))
+        guild = member.guild
+        role = discord.utils.get(guild.roles, name="Plebs")
+
+        try:
+            await member.add_roles(role)
+        except discord.HTTPException:
+            await guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
+
+    async def on_message_delete(self, message):
+        try:
+            file = discord.File("images/delete.jpg")
+            await message.channel.send(content=message.author.mention, file=file)
+        except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError as ex:
+            print(ex)
+
+    async def on_message_edit(self, messageBefore, messageAfter):
+        try:
+            file = discord.File("images/delete.jpg")
+            await messageBefore.channel.send(content=messageBefore.author.mention, file=file)
+        except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError as ex:
+            print(ex)
+
 bot = myBot()
 tree = app_commands.CommandTree(bot)
 
@@ -173,33 +197,6 @@ async def pupulateAvailableSounds():
     for file in os.listdir(audioPath):
         availableSounds[i] = {file}
         i += 1
-
-@bot.event
-async def on_member_join(member):
-    guild = bot.get_guild(int(serverId))
-    role = discord.utils.get(guild.roles, name="Plebs")
-
-    try:
-        await member.add_roles(role)
-    except discord.HTTPException:
-        await guild.system_channel.send(f'Deus não conseguiu categorizar o estatuto de {member.name}')
-
-
-@bot.event
-async def on_message_delete(message):
-    
-    try:
-        file = discord.File("images/delete.jpg")
-        await message.channel.send(content=message.author.mention, file=file)
-    except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError as ex:
-        print(ex)
-
-@bot.event
-async def on_message_edit(messageBefore, messageAfter):
-
-    file = discord.File("images/delete.jpg")
-
-    await messageBefore.channel.send(content=messageBefore.author.mention, file=file)
 
 bot.run(os.environ.get("API_KEY"))
 
