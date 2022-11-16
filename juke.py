@@ -55,7 +55,6 @@ class myBot(discord.Client):
             await self.session.post(webhook_url, json=payload)  
 
     async def on_member_join(self, member):
-        #guild = self.get_guild(int(serverId))
         guild = member.guild
         role = discord.utils.get(guild.roles, name="Plebs")
 
