@@ -60,11 +60,12 @@ class MyBot(discord.Client):
             pass
 
     async def on_message_edit(self, message_before, message_after):
-        try:
-            file = discord.File(available_images['delete'])
-            await message_before.channel.send(content=message_before.author.mention, file=file)
-        except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError:
-            pass
+        if len(message_before.embeds) >= len(message_after.embeds) :
+            try:
+                file = discord.File(available_images['delete'])
+                await message_before.channel.send(content=message_before.author.mention, file=file)
+            except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError:
+                pass
 
     @tasks.loop(hours=24.0)
     async def payment_reminder(self):
