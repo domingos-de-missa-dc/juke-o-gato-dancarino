@@ -197,5 +197,5 @@ bot.run(API_KEY)
 # TODO
 # play a song selecting it with emoji reactions
 # /save restrict file size
-# play YT links
+# play/download YT links
 # if the bot is connected and is called on another channel it doesnt change channel
