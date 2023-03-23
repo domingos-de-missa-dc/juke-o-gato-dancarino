@@ -41,8 +41,6 @@ class MyBot(discord.Client):
         await asyncio.tasks.gather(populate_available_images(), populate_available_sounds())
         print("Sounds and images ready")
         
-        self.payment_reminder.start()
-
     async def on_member_join(self, member):
         guild = member.guild
         role = discord.utils.get(guild.roles, name="Plebs")
@@ -67,23 +65,6 @@ class MyBot(discord.Client):
             except FileNotFoundError | discord.HTTPException | discord.Forbidden | ValueError | TypeError:
                 pass
 
-    @tasks.loop(hours=24.0)
-    async def payment_reminder(self):
-        """ Remind server that payment is pending from first day of the month until 6th """
-        todays_day = date.today().day
-        pay_day = 6
-        if todays_day >= 1 and todays_day <= pay_day:
-            days_left_to_pay = pay_day - todays_day
-            payload = {
-                "username": "Autoridade Tributária",
-                "content": f"@here\nPaga o que deves!\nDias até o server morrer: {str(days_left_to_pay)} :fire:\n",
-                "embeds": [{
-                    "title": "Imposto",
-                    "color": 16777215,
-                    "description": ":money_with_wings: 4.32€"
-                    }]
-                }
-            await self.session.post(WEBHOOK, json=payload)  
 
 bot = commands.Bot(command_prefix="?", intents=discord.Intents.default())
 bot = MyBot()
@@ -216,5 +197,5 @@ bot.run(API_KEY)
 # TODO
 # play a song selecting it with emoji reactions
 # /save restrict file size
-# play YT links
+# play/download YT links
 # if the bot is connected and is called on another channel it doesnt change channel
